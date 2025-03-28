@@ -1,7 +1,8 @@
 from pathlib import Path
 from mlProject.utils.common import read_yaml, create_directories
 from mlProject.constants import *
-from mlProject.entity.config_entity import DataIngestionConfig
+from mlProject.entity.config_entity import (DataIngestionConfig,
+                                            DataValidationConfig)
 
 # Define the file paths before using them
 CONFIG_FILE_PATH = Path("config/config.yaml")
@@ -36,3 +37,20 @@ class ConfigurationManager:
             local_data_file=config.local_data_file,
             unzip_dir=config.unzip_dir
         )
+        
+
+    def get_data_validation_config(self) -> DataValidationConfig:
+        config = self.config.data_validation  # Extracting data validation config
+        schema = self.schema.COLUMNS  # Extracting schema details
+
+        create_directories([config.root_dir])  # Ensuring root directory exists
+
+        # Creating an instance of DataValidationConfig with required parameters
+        data_validation_config = DataValidationConfig(
+            root_dir=config.root_dir,
+            STATUS_FILE=config.STATUS_FILE,
+            unzip_data_dir=config.unzip_data_dir,
+            all_schema=schema,
+        )
+
+        return data_validation_config
